@@ -32,7 +32,7 @@ yptr = ctypes.cast(yarray, ctypes.POINTER(sdl2.Sint16))
 
 def draw_shapes():
 	context.clear(WHITE)
-	sdlgfx.filledPolygonRGBA(context.renderer, xptr, yptr, ptcnt, *GREEN)
+	sdlgfx.filledPolygonRGBA(context.renderer, xarray, yarray, ptcnt, *GREEN)
 	sdlgfx.filledCircleRGBA(context.renderer, 300, 50, 20, *BLUE) 
 	sdlgfx.ellipseRGBA(context.renderer, 320, 240, 20, 40, *RED)
 	sdlgfx.boxRGBA(context.renderer, 200, 150, 300, 200, *RED)
