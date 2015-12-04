@@ -155,6 +155,9 @@ def main():
 		#ren.present()
 		sdl2.SDL_Delay(1000//FPS)
 
+	
+	sdl2.ext.quit()
+
 
 
 def hit_rect(rect, pt):
