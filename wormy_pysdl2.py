@@ -74,9 +74,13 @@ def showStartScreen():
 
 	degrees1 = 0
 	degrees2 = 0
+	win_surf = window.get_surface()
 	while True:
 		ren.clear(BGCOLOR) #fill?
-		sdlgfx.rotozoomSurface(src, angle, zoom, sdlgfx.SMOOTHING_ON)
+		rot_title1 = sdlgfx.rotozoomSurface(title1.surface, degrees1, 1, sdlgfx.SMOOTHING_ON)
+		rot_title2 = sdlgfx.rotozoomSurface(title2.surface, degrees1, 1, sdlgfx.SMOOTHING_ON)
+
+
 
 		rotatedSurf1 = pygame.transform.rotate(titleSurf1, degrees1)
 		rotatedRect1 = rotatedSurf1.get_rect()
