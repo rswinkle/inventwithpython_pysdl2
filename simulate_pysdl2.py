@@ -10,7 +10,7 @@ import sdl2.ext
 import sdl2
 from sdl2 import sdlgfx, sdlmixer
 
-import random, sys, ctypes
+import random, sys
 from utils import sysfont
 
 
@@ -54,7 +54,6 @@ def main():
 	global ren, sprite_factory, sprite_renderer
 	global clickedButton, BEEP1, BEEP2, BEEP3, BEEP4
 
-	#this only initializes video subsystem
 	sdl2.SDL_Init(sdl2.SDL_INIT_VIDEO|sdl2.SDL_INIT_AUDIO)
 
 	window = sdl2.ext.Window("Simulate", size=(WINDOWWIDTH, WINDOWHEIGHT))
