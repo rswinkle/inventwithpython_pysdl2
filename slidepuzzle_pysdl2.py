@@ -221,9 +221,21 @@ def drawBoard(board, message):
 	ren.draw_rect((left-2, top-2, width+8, height+8), BORDERCOLOR)
 
 	
-	ren.fill((*reset_button.position, *reset_button.size), TILECOLOR)
-	ren.fill((*new_button.position, *new_button.size), TILECOLOR)
-	ren.fill((*solve_button.position, *solve_button.size), TILECOLOR)
+	#this new unpacking syntax is introduced in 3.5 ... but I want more portability than that
+	#ren.fill((*reset_button.position, *reset_button.size), TILECOLOR)
+	#ren.fill((*new_button.position, *new_button.size), TILECOLOR)
+	#ren.fill((*solve_button.position, *solve_button.size), TILECOLOR)
+
+	pos = reset_button.position
+	sz = reset_button.size
+	ren.fill((pos[0], pos[1], sz[0], sz[1]), TILECOLOR)
+	pos = new_button.position
+	sz = new_button.size
+	ren.fill((pos[0], pos[1], sz[0], sz[1]), TILECOLOR)
+	pos = solve_button.position
+	sz = solve_button.size
+	ren.fill((pos[0], pos[1], sz[0], sz[1]), TILECOLOR)
+
 	sprite_renderer.render(reset_button)
 	sprite_renderer.render(new_button)
 	sprite_renderer.render(solve_button)

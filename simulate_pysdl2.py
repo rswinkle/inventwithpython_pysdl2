@@ -130,14 +130,18 @@ def main():
 					score += 1
 					waitingForInput = False
 					currentStep = 0 # reset back to first step
-					clickedButton.clear()
+					#clickedButton.clear() clear added in 3.3! ... I'm surprised it hasn't been there forever since it's way better than del l[:] or l[:] = []
+					#and it parallels other collection clear functions
+					del clickedButton[:]
+
 
 			elif (clickedButton and clickedButton[0] != pattern[currentStep]) or (currentStep != 0 and sdl2.SDL_GetTicks() - TIMEOUT*1000 > lastClickTime):
 				# pushed the incorrect button, or has timed out
 				gameOverAnimation()
 				# reset the variables for a new game:
 				pattern = []
-				clickedButton.clear()
+				#clickedButton.clear()
+				del clickedButton[:]
 				currentStep = 0
 				waitingForInput = False
 				score = 0
