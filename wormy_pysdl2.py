@@ -77,22 +77,17 @@ def showStartScreen():
 	win_surf = window.get_surface()
 	while True:
 		ren.clear(BGCOLOR) #fill?
-		rot_title1 = sdlgfx.rotozoomSurface(title1.surface, degrees1, 1, sdlgfx.SMOOTHING_ON)
-		rot_title2 = sdlgfx.rotozoomSurface(title2.surface, degrees1, 1, sdlgfx.SMOOTHING_ON)
+		rot_title1p = sdlgfx.rotozoomSurface(title1.surface, degrees1, 1, sdlgfx.SMOOTHING_ON)
+		rot_title2p = sdlgfx.rotozoomSurface(title2.surface, degrees2, 1, sdlgfx.SMOOTHING_ON)
 
+		rot1 = rot_title1p.contents
+		rot2 = rot_title2p.contents
+		rect1 = sdl2.rect.SDL2_Rect(WINDOWWIDTH//2 - rot1.w//2, WINDOWHEIGHT//2 - rot1.h//2, 0, 0)
+		rect2 = sdl2.rect.SDL2_Rect(WINDOWWIDTH//2 - rot2.w//2, WINDOWHEIGHT//2 - rot2.h//2, 0, 0)
+		sdl2.SDL_BlitSurface(rot1, None, win_surf, rect1)
+		sdl2.SDL_BlitSurface(rot2, None, win_surf, rect2)
 
-
-		rotatedSurf1 = pygame.transform.rotate(titleSurf1, degrees1)
-		rotatedRect1 = rotatedSurf1.get_rect()
-		rotatedRect1.center = (WINDOWWIDTH / 2, WINDOWHEIGHT / 2)
-		DISPLAYSURF.blit(rotatedSurf1, rotatedRect1)
-
-		rotatedSurf2 = pygame.transform.rotate(titleSurf2, degrees2)
-		rotatedRect2 = rotatedSurf2.get_rect()
-		rotatedRect2.center = (WINDOWWIDTH / 2, WINDOWHEIGHT / 2)
-		DISPLAYSURF.blit(rotatedSurf2, rotatedRect2)
-
-		drawPressKeyMsg()
+		#drawPressKeyMsg()
 
 		if checkForKeyPress():
 			pygame.event.get() # clear event queue
@@ -102,6 +97,8 @@ def showStartScreen():
 		degrees1 += 3 # rotate by 3 degrees each frame
 		degrees2 += 7 # rotate by 7 degrees each frame
 
+
+def handle_events():
 
 if __name__ == '__main__':
 	main()

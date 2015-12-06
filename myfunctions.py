@@ -48,12 +48,11 @@ def test_surface_drawing():
 
 	test1 = sprite_factory.from_text("A text sprite")
 	degrees = 0
-	while degrees < 720:
+	while degrees < 180:
 		ren.clear() #fill?
 		rot = sdlgfx.rotozoomSurface(test1.surface, degrees, 3, sdlgfx.SMOOTHING_ON)
 		
-		#rot.position = WIDTH//2 - rot.size[0]//2, HEIGHT//2 -rot.size[1]//2
-
+		#same lame copy necessary as below
 		tmp = rot.contents
 		pos = WIDTH//2 - tmp.w//2, HEIGHT//2 -tmp.h//2
 
@@ -63,6 +62,28 @@ def test_surface_drawing():
 		sdl2.SDL_Delay(1000//90)
 		window.refresh() #equ to sdl2.SDL_UpdateWindowSurface(window.window) ...?
 
+def test_surface_sprites():
+	test1 = sprite_factory.from_text("A text sprite")
+	degrees = 0
+	while degrees < 360:
+		ren.clear() #fill?
+		rot = sdlgfx.rotozoomSurface(test1.surface, degrees, 3, sdlgfx.SMOOTHING_ON)
+
+		#print(type(rot), type(rot.contents))
+		#<class 'sdl2.surface.LP_SDL_Surface'> <class 'sdl2.surface.SDL_Surface'>
+
+		#this is lame ... from_surface takes sdl2.surface.SDL_Surface which means calling contents
+		#which creates a copy
+		#Note that ctypes does not have OOR (original object return), it constructs a new, equivalent object each time you retrieve an attribute
+		#so rot.contents creates a new ~52 byte surface
+		rot = sprite_factory.from_surface(rot.contents)
+		rot.position = WIDTH//2 - rot.size[0]//2, HEIGHT//2 -rot.size[1]//2
+
+
+		degrees += 1
+		sdl2.SDL_Delay(1000//90)
+		sprite_renderer.render(rot)
+		ren.present()
 
 def main():
 	global ren, window, sprite_factory, sprite_renderer
@@ -81,7 +102,12 @@ def main():
 	sprite_renderer = sprite_factory.create_sprite_render_system(window)
 
 	#test1(1000)
-	test_surface_drawing()
+	#test_surface_drawing()
+	#sdl2.SDL_Delay(1000)
+	#test_surface_sprites()
+
+	while True:
+
 
 
 
