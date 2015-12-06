@@ -160,7 +160,9 @@ def handle_events():
 			shutdown()
 		elif event.type == sdl2.SDL_MOUSEBUTTONUP:
 			mousex, mousey = event.button.x, event.button.y
-			clickedButton.append(getButtonClicked(mousex, mousey))
+			button = getButtonClicked(mousex, mousey)
+			if button:
+			    clickedButton.append(button)
 		elif event.type == sdl2.SDL_KEYDOWN:
 			sym = event.key.keysym.sym
 			if sym == sdl2.SDLK_ESCAPE:
