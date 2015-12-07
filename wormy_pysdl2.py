@@ -105,11 +105,9 @@ def runGame():
 
 		# check if the worm has hit itself or the edge
 		if wormCoords[HEAD]['x'] == -1 or wormCoords[HEAD]['x'] == CELLWIDTH or wormCoords[HEAD]['y'] == -1 or wormCoords[HEAD]['y'] == CELLHEIGHT:
-			print("hit edge")
 			return # game over
 		for wormBody in wormCoords[1:]:
 			if wormBody['x'] == wormCoords[HEAD]['x'] and wormBody['y'] == wormCoords[HEAD]['y']:
-				print("hit itself")
 				return # game over
 
 		# check if worm has eaten an apple
@@ -145,7 +143,6 @@ def runGame():
 		drawWorm(wormCoords)
 		drawApple(apple)
 		drawScore(len(wormCoords) - 3)
-		ren.present()
 		sdl2.SDL_Delay(1000//FPS)
 
 
@@ -179,9 +176,11 @@ def showStartScreen():
 		if check_for_key_press():
 			return
 
-		#TODO test order etc
-		window.refresh()
 		sprite_renderer.render(pressKey)
+		#neither of these is actually necessary because they all call SDL_UpdateWindowSurface
+		#and sprite_renderer.render above calls that too (in the case of software rendering for
+		#texture/accellerated it calls SDL_RenderPresent)
+		#window.refresh()
 		#ren.present()
 
 		sdl2.SDL_Delay(1000//FPS)
@@ -200,7 +199,6 @@ def showGameOverScreen():
 
 	sprite_renderer.render((gamesprite, oversprite, pressKey))
 
-	ren.present()
 	sdl2.SDL_Delay(500)
 	check_for_key_press() # clear out any key presses in the event queue
 

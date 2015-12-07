@@ -71,9 +71,9 @@ def main():
 	sprite_renderer = sprite_factory.create_sprite_render_system(window)
 
 
-	reset_button, reset_rect = make_text(sprite_factory, "Reset", WINDOWWIDTH - 120, WINDOWHEIGHT - 90)
-	new_button, new_rect = make_text(sprite_factory, "New Game", WINDOWWIDTH - 120, WINDOWHEIGHT - 60)
-	solve_button, solve_rect = make_text(sprite_factory, "Solve", WINDOWWIDTH - 120, WINDOWHEIGHT - 30)
+	reset_button, reset_rect = make_text(sprite_factory, "Reset", WINDOWWIDTH - 120, WINDOWHEIGHT - 90, bg_color=TILECOLOR)
+	new_button, new_rect = make_text(sprite_factory, "New Game", WINDOWWIDTH - 120, WINDOWHEIGHT - 60, bg_color=TILECOLOR)
+	solve_button, solve_rect = make_text(sprite_factory, "Solve", WINDOWWIDTH - 120, WINDOWHEIGHT - 30, bg_color=TILECOLOR)
 
 
 	mainBoard, solutionSeq = generateNewPuzzle(NUMSLIDES)
@@ -104,7 +104,6 @@ def main():
 				if event.window.event == sdl2.SDL_WINDOWEVENT_EXPOSED:
 					print("window exposed")
 					drawBoard(mainBoard, msg)
-					ren.present()
 			elif event.type == sdl2.SDL_MOUSEBUTTONUP:
 				pos = event.button.x, event.button.y
 				spotx, spoty = getSpotClicked(mainBoard, pos[0], pos[1])
@@ -153,7 +152,6 @@ def main():
 			allMoves.append(slideTo) # record the slide
 
 
-		#ren.present()
 		sdl2.SDL_Delay(1000//FPS)
 
 	
@@ -162,8 +160,8 @@ def main():
 
 
 
-def make_text(sprite_factory, text, top, left):
-	button = sprite_factory.from_text(text)
+def make_text(sprite_factory, text, top, left, **kwargs):
+	button = sprite_factory.from_text(text, **kwargs)
 	button.position = top, left
 	return (button, sdl2.SDL_Rect(top, left, *button.size))
 
@@ -174,7 +172,6 @@ def generateNewPuzzle(numSlides):
 	sequence = []
 	board = getStartingBoard()
 	drawBoard(board, 'Generating new puzzle...')
-	ren.present()
 	sdl2.SDL_Delay(500) # pause 500 milliseconds for effect
 	lastMove = None
 	for i in range(numSlides):
@@ -210,25 +207,7 @@ def drawBoard(board, message):
 	ren.draw_rect((left-2, top-2, width+8, height+8), BORDERCOLOR)
 
 	
-	#this new unpacking syntax is introduced in 3.5 ... but I want more portability than that
-	#ren.fill((*reset_button.position, *reset_button.size), TILECOLOR)
-	#ren.fill((*new_button.position, *new_button.size), TILECOLOR)
-	#ren.fill((*solve_button.position, *solve_button.size), TILECOLOR)
-
-	pos = reset_button.position
-	sz = reset_button.size
-	ren.fill((pos[0], pos[1], sz[0], sz[1]), TILECOLOR)
-	pos = new_button.position
-	sz = new_button.size
-	ren.fill((pos[0], pos[1], sz[0], sz[1]), TILECOLOR)
-	pos = solve_button.position
-	sz = solve_button.size
-	ren.fill((pos[0], pos[1], sz[0], sz[1]), TILECOLOR)
-
-	sprite_renderer.render(reset_button)
-	sprite_renderer.render(new_button)
-	sprite_renderer.render(solve_button)
-	#ren.present()
+	sprite_renderer.render([reset_button, new_button, solve_button])
 
 
 def getStartingBoard():
@@ -368,13 +347,11 @@ def slideAnimation(board, direction, message, animationSpeed):
 		
 		drawTile(movex, movey, board[movex][movey], adjx, adjy)
 
-		ren.present()
 		sdl2.SDL_Delay(1000//FPS)
 	
 	ren.fill((left+adjx, top+adjy, TILESIZE, TILESIZE), BGCOLOR)
 	makeMove(board, direction)
 	drawTile(blankx, blanky, board[blankx][blanky])
-	ren.present()
 
 
 def resetAnimation(board, allMoves):

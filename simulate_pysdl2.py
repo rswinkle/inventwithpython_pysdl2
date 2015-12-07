@@ -96,16 +96,13 @@ def main():
 		ren.fill((0, 0, WINDOWWIDTH, WINDOWHEIGHT), bgColor)
 		drawButtons()
 
-
 		score_text = make_text(sprite_factory, "Score: "+str(score), WINDOWWIDTH - 100, 10)
-		sprite_renderer.render(score_text)
-		sprite_renderer.render(info_text)
+		sprite_renderer.render([score_text, info_text]) #will bring the buttons to screen too when it calls renderpresent/update
 
 		handle_events()
 
 		if not waitingForInput:
 			# play the pattern
-			ren.present()
 			sdl2.SDL_Delay(1000)
 			pattern.append(random.choice((YELLOW, BLUE, RED, GREEN)))
 			for button in pattern:
@@ -148,8 +145,7 @@ def main():
 				sdl2.SDL_Delay(1000)
 				changeBackgroundAnimation()
 
-		ren.present()
-		sdl2.SDL_Delay(FPS)
+		sdl2.SDL_Delay(1000//FPS)
 
 	
 	shutdown()
@@ -229,7 +225,7 @@ def flashButtonAnimation(color, animationSpeed=50):
 			ren.fill(rectangle, color)
 			ren.fill(rectangle, (r,g,b,alpha))
 			ren.present()
-			sdl2.SDL_Delay(FPS)
+			sdl2.SDL_Delay(1000//FPS)
 
 	ren.fill(rectangle, color)
 	ren.present()
@@ -260,7 +256,7 @@ def changeBackgroundAnimation(animationSpeed=40):
 		drawButtons() # redraw the buttons on top of the tint
 
 		ren.present();
-		sdl2.SDL_Delay(FPS)
+		sdl2.SDL_Delay(1000//FPS)
 
 	bgColor = newBgColor
 
@@ -287,7 +283,7 @@ def gameOverAnimation(color=WHITE, animationSpeed=50):
 				drawButtons()
 
 				ren.present()
-				sdl2.SDL_Delay(FPS)
+				sdl2.SDL_Delay(1000//FPS)
 
 
 
