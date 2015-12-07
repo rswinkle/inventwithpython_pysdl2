@@ -3,8 +3,9 @@ import sdl2
 from sdl2 import sdlgfx
 
 from utils import sysfont
-
 from random import randint
+
+import sys
 
 
 
@@ -66,6 +67,8 @@ def test_surface_sprites():
 	test1 = sprite_factory.from_text("A text sprite")
 	degrees = 0
 	while degrees < 360:
+		if get_events([sdl2.SDL_QUIT]):
+			shutdown()
 		ren.clear() #fill?
 		rot = sdlgfx.rotozoomSurface(test1.surface, degrees, 3, sdlgfx.SMOOTHING_ON)
 
@@ -84,6 +87,18 @@ def test_surface_sprites():
 		sdl2.SDL_Delay(1000//90)
 		sprite_renderer.render(rot)
 		ren.present()
+
+
+#change types to OR'd flags?  would mean I don't have to wrap a single
+#type in []
+def get_events(types=None):
+	events = []
+	for event in sdl2.ext.get_events():
+		if not types or event.type in types:
+			events += [event]
+	
+	return events
+
 
 def main():
 	global ren, window, sprite_factory, sprite_renderer
@@ -106,9 +121,26 @@ def main():
 	#sdl2.SDL_Delay(1000)
 	#test_surface_sprites()
 
+	ren.present()
+
 	while True:
+		for event in get_events():
+			if event.type == sdl2.SDL_QUIT:
+				shutdown()
+			elif event.type == sdl2.SDL_MOUSEBUTTONUP:
+				mousex, mousey = event.button.x, event.button.y
+			elif event.type == sdl2.SDL_KEYDOWN:
+				sym = event.key.keysym.sym
+				if sym == sdl2.SDLK_ESCAPE:
+					shutdown()
+
+		test_surface_sprites()
 
 
+
+def shutdown():
+	sdl2.ext.quit()
+	sys.exit()
 
 
 if __name__ == '__main__':
