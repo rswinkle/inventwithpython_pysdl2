@@ -71,9 +71,10 @@ def main():
 	sprite_renderer = sprite_factory.create_sprite_render_system(window)
 
 
-	reset_button = make_text(sprite_factory, "Reset", WINDOWWIDTH - 120, WINDOWHEIGHT - 90)
-	new_button = make_text(sprite_factory, "New Game", WINDOWWIDTH - 120, WINDOWHEIGHT - 60)
-	solve_button = make_text(sprite_factory, "Solve", WINDOWWIDTH - 120, WINDOWHEIGHT - 30)
+	reset_button, reset_rect = make_text(sprite_factory, "Reset", WINDOWWIDTH - 120, WINDOWHEIGHT - 90)
+	new_button, new_rect = make_text(sprite_factory, "New Game", WINDOWWIDTH - 120, WINDOWHEIGHT - 60)
+	solve_button, solve_rect = make_text(sprite_factory, "Solve", WINDOWWIDTH - 120, WINDOWHEIGHT - 30)
+
 
 	mainBoard, solutionSeq = generateNewPuzzle(NUMSLIDES)
 	SOLVEDBOARD = getStartingBoard() # a solved board is the same as the board in a start state.
@@ -107,15 +108,15 @@ def main():
 			elif event.type == sdl2.SDL_MOUSEBUTTONUP:
 				pos = event.button.x, event.button.y
 				spotx, spoty = getSpotClicked(mainBoard, pos[0], pos[1])
-
+				pt = sdl2.SDL_Point(pos[0], pos[1])
 				if (spotx, spoty) == (None, None):
-					if hit_bbox(reset_button.area, pos):
+					if sdl2.SDL_PointInRect(pt, reset_rect):
 						resetAnimation(mainBoard, allMoves)
 						allMoves = []
-					elif hit_bbox(new_button.area, pos):
+					elif sdl2.SDL_PointInRect(pt, new_rect):
 						mainBoard, solutionSeq = generateNewPuzzle(NUMSLIDES)
 						allMoves = []
-					elif hit_bbox(solve_button.area, pos):
+					elif sdl2.SDL_PointInRect(pt, solve_rect):
 						resetAnimation(mainBoard, solutionSeq + allMoves)
 						allMoves = []
 
@@ -160,23 +161,11 @@ def main():
 
 
 
-def hit_rect(rect, pt):
-	"""returns True if pt is inside rect (rect is tuple (x, y, w, h))"""
-	if pt[0] >= rect[0] and pt[0] <= rect[0] + rect[2] and pt[1] >= rect[1] and pt[1] <= rect[1]+rect[3]:
-		return True
-	return False
-
-
-def hit_bbox(box, pt):
-	"""returns True if pt is inside box (box is tuple (x1, y1, x2, y2))"""
-	if pt[0] >= box[0] and pt[0] <= box[2] and pt[1] >= box[1] and pt[1] <= box[3]:
-		return True
-	return False
 
 def make_text(sprite_factory, text, top, left):
 	button = sprite_factory.from_text(text)
 	button.position = top, left
-	return button
+	return (button, sdl2.SDL_Rect(top, left, *button.size))
 
 
 def generateNewPuzzle(numSlides):
@@ -199,7 +188,7 @@ def generateNewPuzzle(numSlides):
 def drawBoard(board, message):
 	ren.clear(BGCOLOR)
 	if message:
-		text = make_text(sprite_factory, message, 5, 5)
+		text, rect = make_text(sprite_factory, message, 5, 5)
 		sprite_renderer.render(text)
 
 	for tilex in range(len(board)):
@@ -316,10 +305,11 @@ def getLeftTopOfTile(tileX, tileY):
 
 def getSpotClicked(board, x, y):
 	# from the x & y pixel coordinates, get the x & y board coordinates
+	pt = sdl2.SDL_Point(x, y)
 	for tileX in range(len(board)):
 		for tileY in range(len(board[0])):
 			left, top = getLeftTopOfTile(tileX, tileY)
-			if hit_rect((left, top, TILESIZE, TILESIZE), (x, y)):
+			if sdl2.SDL_PointInRect(pt, sdl2.SDL_Rect(left, top, TILESIZE, TILESIZE)):
 				return (tileX, tileY)
 	return (None, None)
 

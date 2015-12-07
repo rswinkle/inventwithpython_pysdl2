@@ -234,26 +234,16 @@ def flashButtonAnimation(color, animationSpeed=50):
 	ren.fill(rectangle, color)
 	ren.present()
 
-def hit_rect(rect, pt):
-	"""returns True if pt is inside rect (rect is tuple (x, y, w, h))"""
-	if pt[0] >= rect[0] and pt[0] <= rect[0] + rect[2] and pt[1] >= rect[1] and pt[1] <= rect[1]+rect[3]:
-		return True
-	return False
-
-def hit_bbox(box, pt):
-	"""returns True if pt is inside box (box is tuple (x1, y1, x2, y2))"""
-	if pt[0] >= box[0] and pt[0] <= box[2] and pt[1] >= box[1] and pt[1] <= box[3]:
-		return True
-	return False
 
 def getButtonClicked(x, y):
-	if hit_rect(YELLOWRECT, (x, y)):
+	pt = sdl2.SDL_Point(x, y)
+	if sdl2.SDL_PointInRect(pt, sdl2.SDL_Rect(*YELLOWRECT)):
 		return YELLOW
-	elif hit_rect(BLUERECT, (x, y)):
+	elif sdl2.SDL_PointInRect(pt, sdl2.SDL_Rect(*BLUERECT)):
 		return BLUE
-	elif hit_rect(REDRECT, (x, y)):
+	elif sdl2.SDL_PointInRect(pt, sdl2.SDL_Rect(*REDRECT)):
 		return RED
-	elif hit_rect(GREENRECT, (x, y)):
+	elif sdl2.SDL_PointInRect(pt, sdl2.SDL_Rect(*GREENRECT)):
 		return GREEN
 	return None
 
