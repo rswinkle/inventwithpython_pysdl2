@@ -73,29 +73,33 @@ def runGame():
 				  {'x': startx - 1, 'y': starty},
 				  {'x': startx - 2, 'y': starty}]
 	direction = RIGHT
-	turn = None
+	latestdir = direction
+	turns = []
 
 	# Start the apple in a random place.
 	apple = getRandomLocation()
 
 	while True: # main game loop
-		turn = None
 		for event in sdl2.ext.get_events():
+			if turns:
+				latestdir = turns[0]
+			else:
+				latestdir = direction
+
 			if event.type == sdl2.SDL_QUIT:
 				shutdown()
 			elif event.type == sdl2.SDL_KEYDOWN:
 				sc = event.key.keysym.scancode
 				#only get the first valid turn otherwise you can kill yourself by turning
 				#180 degrees in the same frame
-				if not turn:
-					if (sc == sdl2.SDL_SCANCODE_LEFT or sc == sdl2.SDL_SCANCODE_A) and direction != RIGHT:
-						turn = LEFT
-					elif (sc == sdl2.SDL_SCANCODE_RIGHT or sc == sdl2.SDL_SCANCODE_D) and direction != LEFT:
-						turn = RIGHT
-					elif (sc == sdl2.SDL_SCANCODE_UP or sc == sdl2.SDL_SCANCODE_W) and direction != DOWN:
-						turn = UP
-					elif (sc == sdl2.SDL_SCANCODE_DOWN or sc == sdl2.SDL_SCANCODE_S) and direction != UP:
-						turn = DOWN
+				if (sc == sdl2.SDL_SCANCODE_LEFT or sc == sdl2.SDL_SCANCODE_A) and latestdir != RIGHT:
+					turns.append(LEFT)
+				elif (sc == sdl2.SDL_SCANCODE_RIGHT or sc == sdl2.SDL_SCANCODE_D) and latestdir != LEFT:
+					turns.append(RIGHT)
+				elif (sc == sdl2.SDL_SCANCODE_UP or sc == sdl2.SDL_SCANCODE_W) and latestdir != DOWN:
+					turns.append(UP)
+				elif (sc == sdl2.SDL_SCANCODE_DOWN or sc == sdl2.SDL_SCANCODE_S) and latestdir != UP:
+					turns.append(DOWN)
 				if sc == sdl2.SDL_SCANCODE_ESCAPE:
 					shutdown()
 
@@ -116,8 +120,13 @@ def runGame():
 			del wormCoords[-1] # remove worm's tail segment
 			#wormCoords.pop()
 
-		if turn:
-			direction = turn
+		#get first actual turn
+		while turns:
+			if turns[0] != direction:
+				direction = turns.pop(0)
+				break
+			turns.pop(0)
+
 		# move the worm by adding a segment in the direction it is moving
 		if direction == UP:
 			newHead = {'x': wormCoords[HEAD]['x'], 'y': wormCoords[HEAD]['y'] - 1}
