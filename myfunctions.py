@@ -5,7 +5,7 @@ from sdl2 import sdlgfx
 from utils import sysfont
 from random import randint
 
-import sys
+import sys, ctypes
 
 
 
@@ -69,6 +69,16 @@ def test_surface_sprites():
 	while degrees < 360:
 		if get_events([sdl2.SDL_QUIT]):
 			shutdown()
+
+		keylen = ctypes.c_int(10)
+		print(keylen.value)
+		keyboard_status = sdl2.SDL_GetKeyboardState(ctypes.byref(keylen))
+		print(type(keyboard_status))
+		print(keylen.value)
+		if keyboard_status[sdl2.SDL_SCANCODE_D]:
+			print("d is down")
+
+
 		ren.clear() #fill?
 		rot = sdlgfx.rotozoomSurface(test1.surface, degrees, 3, sdlgfx.SMOOTHING_ON)
 
