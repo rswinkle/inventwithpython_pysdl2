@@ -5,6 +5,7 @@
 
 #Ported to PySDL2 by Robert Winkler
 #http://robertwinkler.com
+# Released into Public Domain, fallback MIT/BSD
 
 import sdl2.ext
 import sdl2
