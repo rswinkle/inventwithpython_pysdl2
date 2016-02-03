@@ -2,8 +2,8 @@ Invent With Python ported to PySDL2
 ===================================
 
 This is a project aiming to port all the code/games from the book
-["Invent With Python"](http://inventwithpython.com/pygame/chapters/) by Al Sweigart
-from pygame to PySDL2
+["Making Games with Python & Pygame"](http://inventwithpython.com/pygame/chapters/) by Al Sweigart
+from pygame to PySDL2.
 
 ## Why?
 
