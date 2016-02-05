@@ -1,4 +1,4 @@
-# Tetromino (a Tetris clone)
+# Tetromino for Idiots
 # By Al Sweigart al@inventwithpython.com
 # http://inventwithpython.com/pygame
 # Released under a "Simplified BSD" license
@@ -50,121 +50,19 @@ COLORS      = (     BLUE,      GREEN,      RED,      YELLOW)
 LIGHTCOLORS = (LIGHTBLUE, LIGHTGREEN, LIGHTRED, LIGHTYELLOW)
 assert len(COLORS) == len(LIGHTCOLORS) # each color must have light color
 
-BIGFONTSIZE = 100
+BIGFONTSIZE = 60
 
 
 TEMPLATEWIDTH = 5
 TEMPLATEHEIGHT = 5
 
-S_SHAPE_TEMPLATE = [['.....',
-                     '.....',
-                     '..OO.',
-                     '.OO..',
-                     '.....'],
-                    ['.....',
-                     '..O..',
-                     '..OO.',
-                     '...O.',
-                     '.....']]
+SHAPE_TEMPLATE = [['.....',
+                   '.....',
+                   '..O..',
+                   '.....',
+                   '.....']]
 
-Z_SHAPE_TEMPLATE = [['.....',
-                     '.....',
-                     '.OO..',
-                     '..OO.',
-                     '.....'],
-                    ['.....',
-                     '..O..',
-                     '.OO..',
-                     '.O...',
-                     '.....']]
-
-I_SHAPE_TEMPLATE = [['..O..',
-                     '..O..',
-                     '..O..',
-                     '..O..',
-                     '.....'],
-                    ['.....',
-                     '.....',
-                     'OOOO.',
-                     '.....',
-                     '.....']]
-
-O_SHAPE_TEMPLATE = [['.....',
-                     '.....',
-                     '.OO..',
-                     '.OO..',
-                     '.....']]
-
-J_SHAPE_TEMPLATE = [['.....',
-                     '.O...',
-                     '.OOO.',
-                     '.....',
-                     '.....'],
-                    ['.....',
-                     '..OO.',
-                     '..O..',
-                     '..O..',
-                     '.....'],
-                    ['.....',
-                     '.....',
-                     '.OOO.',
-                     '...O.',
-                     '.....'],
-                    ['.....',
-                     '..O..',
-                     '..O..',
-                     '.OO..',
-                     '.....']]
-
-L_SHAPE_TEMPLATE = [['.....',
-                     '...O.',
-                     '.OOO.',
-                     '.....',
-                     '.....'],
-                    ['.....',
-                     '..O..',
-                     '..O..',
-                     '..OO.',
-                     '.....'],
-                    ['.....',
-                     '.....',
-                     '.OOO.',
-                     '.O...',
-                     '.....'],
-                    ['.....',
-                     '.OO..',
-                     '..O..',
-                     '..O..',
-                     '.....']]
-
-T_SHAPE_TEMPLATE = [['.....',
-                     '..O..',
-                     '.OOO.',
-                     '.....',
-                     '.....'],
-                    ['.....',
-                     '..O..',
-                     '..OO.',
-                     '..O..',
-                     '.....'],
-                    ['.....',
-                     '.....',
-                     '.OOO.',
-                     '..O..',
-                     '.....'],
-                    ['.....',
-                     '..O..',
-                     '.OO..',
-                     '..O..',
-                     '.....']]
-
-PIECES = {'S': S_SHAPE_TEMPLATE,
-          'Z': Z_SHAPE_TEMPLATE,
-          'J': J_SHAPE_TEMPLATE,
-          'L': L_SHAPE_TEMPLATE,
-          'I': I_SHAPE_TEMPLATE,
-          'O': O_SHAPE_TEMPLATE,
-          'T': T_SHAPE_TEMPLATE}
+PIECES = {'A': SHAPE_TEMPLATE}
 
 
 
@@ -175,7 +73,7 @@ def main():
 
 	SDL_Init(SDL_INIT_VIDEO|SDL_INIT_AUDIO)
 
-	WINDOW = ext.Window("Tetromino", size=(WINDOWWIDTH, WINDOWHEIGHT))
+	WINDOW = ext.Window("Tetromino for Idiots", size=(WINDOWWIDTH, WINDOWHEIGHT))
 	REN = ext.Renderer(WINDOW)
 	WINDOW.show()
 
@@ -191,7 +89,7 @@ def main():
 	#BEEP1 = sdlmixer.Mix_LoadWAV(b"beep1.ogg")
 
 
-	showTextScreen("Tetromino")
+	showTextScreen("Tetromino for Idiots")
 	while True:
 		if random.randint(0, 1) == 0:
 			MUSIC = sdlmixer.Mix_LoadMUS(b"tetrisb.mid")
@@ -333,7 +231,7 @@ def showTextScreen(text):
 
 	# Draw the text
 	textsprite = SPRITE_FACTORY.from_text(text, size=BIGFONTSIZE, color=TEXTCOLOR)
-	textsprite.position = shadowtext.x-3, shadowtext.y-3
+	textsprite.position = shadowtext.x-2, shadowtext.y-2
 
 	# Draw the additional "Press a key to play." text.
 	presskeysprite = SPRITE_FACTORY.from_text("Press a key to play.", color=TEXTCOLOR)
@@ -503,3 +401,4 @@ def drawPiece(piece, pixelx=None, pixely=None):
 
 if __name__ == '__main__':
 	main()
+
