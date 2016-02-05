@@ -43,20 +43,20 @@ HEAD = 0 # syntactic sugar: index of the worm's head
 
 def main():
 	#cause I don't want to pass these around
-	global window, ren, sprite_factory, sprite_renderer
+	global WINDOW, REN, SPRITE_FACTORY, SPRITE_RENDERER
 
 	sdl2.ext.init()
 
-	window = sdl2.ext.Window("Wormy", size=(WINDOWWIDTH, WINDOWHEIGHT))
-	ren = sdl2.ext.Renderer(window, flags=sdl2.SDL_RENDERER_SOFTWARE)
-	window.show()
+	WINDOW = sdl2.ext.Window("Wormy", size=(WINDOWWIDTH, WINDOWHEIGHT))
+	REN = sdl2.ext.Renderer(WINDOW, flags=sdl2.SDL_RENDERER_SOFTWARE)
+	WINDOW.show()
 
 	font_file = sysfont.get_font("freesans", sysfont.STYLE_BOLD)
 	font_manager = sdl2.ext.FontManager(font_file, size=18)
 
 	#fontmanager=font_manager will be default_args passed to every sprite creation method
-	sprite_factory = sdl2.ext.SpriteFactory(sdl2.ext.SOFTWARE, renderer=ren, fontmanager=font_manager, free=True)
-	sprite_renderer = sprite_factory.create_sprite_render_system(window)
+	SPRITE_FACTORY = sdl2.ext.SpriteFactory(sdl2.ext.SOFTWARE, renderer=REN, fontmanager=font_manager, free=True)
+	SPRITE_RENDERER = SPRITE_FACTORY.create_sprite_render_system(WINDOW)
 	
 	showStartScreen()
 	while True:
@@ -137,12 +137,13 @@ def runGame():
 
 		wormCoords.insert(0, newHead)
 
-		ren.clear(BGCOLOR)
+		REN.clear(BGCOLOR)
 
 		drawGrid()
 		drawWorm(wormCoords)
 		drawApple(apple)
 		drawScore(len(wormCoords) - 3)
+		REN.present()
 		sdl2.SDL_Delay(1000//FPS)
 
 
@@ -150,19 +151,19 @@ def runGame():
 
 
 def showStartScreen():
-	title1 = sprite_factory.from_text("Wormy!", size=100, bg_color=DARKGREEN)
-	title2 = sprite_factory.from_text("Wormy!", size=100, color=GREEN)
+	title1 = SPRITE_FACTORY.from_text("Wormy!", size=100, bg_color=DARKGREEN)
+	title2 = SPRITE_FACTORY.from_text("Wormy!", size=100, color=GREEN)
 	#titleSurf1 = titleFont.render('Wormy!', True, WHITE, DARKGREEN)
 	#titleSurf2 = titleFont.render('Wormy!', True, GREEN)
 
-	pressKey = sprite_factory.from_text("Press a key to play.", color=DARKGRAY)
+	pressKey = SPRITE_FACTORY.from_text("Press a key to play.", color=DARKGRAY)
 	pressKey.position = WINDOWWIDTH - 200, WINDOWHEIGHT - 30
 
 	degrees1 = 0
 	degrees2 = 0
-	win_surf = window.get_surface()
+	win_surf = WINDOW.get_surface()
 	while True:
-		ren.clear(BGCOLOR) #fill?
+		REN.clear(BGCOLOR) #fill?
 		rot_title1p = sdlgfx.rotozoomSurface(title1.surface, degrees1, 1, sdlgfx.SMOOTHING_ON)
 		rot_title2p = sdlgfx.rotozoomSurface(title2.surface, degrees2, 1, sdlgfx.SMOOTHING_ON)
 
@@ -176,12 +177,8 @@ def showStartScreen():
 		if check_for_key_press():
 			return
 
-		sprite_renderer.render(pressKey)
-		#neither of these is actually necessary because they all call SDL_UpdateWindowSurface
-		#and sprite_renderer.render above calls that too (in the case of software rendering for
-		#texture/accellerated it calls SDL_RenderPresent)
-		#window.refresh()
-		#ren.present()
+		SPRITE_RENDERER.render(pressKey)
+		REN.present()
 
 		sdl2.SDL_Delay(1000//FPS)
 		degrees1 += 3 # rotate by 3 degrees each frame
@@ -189,15 +186,16 @@ def showStartScreen():
 
 
 def showGameOverScreen():
-	gamesprite = sprite_factory.from_text("Game", size=150)
-	oversprite = sprite_factory.from_text("Over", size=150)
-	pressKey = sprite_factory.from_text("Press a key to play.", color=DARKGRAY)
+	gamesprite = SPRITE_FACTORY.from_text("Game", size=150)
+	oversprite = SPRITE_FACTORY.from_text("Over", size=150)
+	pressKey = SPRITE_FACTORY.from_text("Press a key to play.", color=DARKGRAY)
 
 	gamesprite.position = WINDOWWIDTH//2 - gamesprite.size[0]//2, 10
 	oversprite.position = WINDOWWIDTH//2 - oversprite.size[0]//2, gamesprite.size[1] + 35
 	pressKey.position = WINDOWWIDTH - 200, WINDOWHEIGHT - 30
 
-	sprite_renderer.render((gamesprite, oversprite, pressKey))
+	SPRITE_RENDERER.render((gamesprite, oversprite, pressKey))
+	REN.present()
 
 	sdl2.SDL_Delay(500)
 	check_for_key_press() # clear out any key presses in the event queue
@@ -227,31 +225,31 @@ def getRandomLocation():
 
 
 def drawScore(score):
-	scoresprite = sprite_factory.from_text("Score: %s" % (score)) 
+	scoresprite = SPRITE_FACTORY.from_text("Score: %s" % (score)) 
 	scoresprite.position = WINDOWWIDTH - 120, 10
     #scoreSurf = BASICFONT.render('Score: %s' % (score), True, WHITE)
-	sprite_renderer.render(scoresprite)
+	SPRITE_RENDERER.render(scoresprite)
 
 
 def drawWorm(wormCoords):
     for coord in wormCoords:
         x = coord['x'] * CELLSIZE
         y = coord['y'] * CELLSIZE
-        ren.fill((x, y, CELLSIZE, CELLSIZE), DARKGREEN)
-        ren.fill((x+4, y+4, CELLSIZE-8, CELLSIZE-8), GREEN)
+        REN.fill((x, y, CELLSIZE, CELLSIZE), DARKGREEN)
+        REN.fill((x+4, y+4, CELLSIZE-8, CELLSIZE-8), GREEN)
 
 
 def drawApple(coord):
     x = coord['x'] * CELLSIZE
     y = coord['y'] * CELLSIZE
-    ren.fill((x, y, CELLSIZE, CELLSIZE), RED)
+    REN.fill((x, y, CELLSIZE, CELLSIZE), RED)
 
 
 def drawGrid():
     for x in range(0, WINDOWWIDTH, CELLSIZE): # draw vertical lines
-    	ren.draw_line((x, 0, x, WINDOWHEIGHT), DARKGRAY)
+    	REN.draw_line((x, 0, x, WINDOWHEIGHT), DARKGRAY)
     for y in range(0, WINDOWHEIGHT, CELLSIZE): # draw horizontal lines
-    	ren.draw_line((0, y, WINDOWWIDTH, y), DARKGRAY)
+    	REN.draw_line((0, y, WINDOWWIDTH, y), DARKGRAY)
 
 
 def shutdown():

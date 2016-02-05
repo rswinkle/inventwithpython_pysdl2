@@ -171,20 +171,20 @@ PIECES = {'S': S_SHAPE_TEMPLATE,
 
 def main():
 	#cause I don't want to pass these around
-	global window, ren, sprite_factory, sprite_renderer, music
+	global WINDOW, REN, SPRITE_FACTORY, SPRITE_RENDERER, MUSIC
 
 	SDL_Init(SDL_INIT_VIDEO|SDL_INIT_AUDIO)
 
-	window = ext.Window("Tetromino", size=(WINDOWWIDTH, WINDOWHEIGHT))
-	ren = ext.Renderer(window, flags=SDL_RENDERER_SOFTWARE)
-	window.show()
+	WINDOW = ext.Window("Tetromino", size=(WINDOWWIDTH, WINDOWHEIGHT))
+	REN = ext.Renderer(WINDOW)
+	WINDOW.show()
 
 	font_file = sysfont.get_font("freesans", sysfont.STYLE_BOLD)
 	font_manager = ext.FontManager(font_file, size=18)
 
 	#fontmanager=font_manager will be default_args passed to every sprite creation method
-	sprite_factory = ext.SpriteFactory(ext.SOFTWARE, renderer=ren, fontmanager=font_manager, free=True)
-	sprite_renderer = sprite_factory.create_sprite_render_system(window)
+	SPRITE_FACTORY = ext.SpriteFactory(renderer=REN, fontmanager=font_manager, free=True)
+	SPRITE_RENDERER = SPRITE_FACTORY.create_sprite_render_system(WINDOW)
 
 	sdlmixer.Mix_Init(sdlmixer.MIX_INIT_OGG)
 	sdlmixer.Mix_OpenAudio(22050, sdlmixer.MIX_DEFAULT_FORMAT, 2, 1024)
@@ -194,10 +194,10 @@ def main():
 	showTextScreen("Tetromino")
 	while True:
 		if random.randint(0, 1) == 0:
-			music = sdlmixer.Mix_LoadMUS(b"tetrisb.mid")
+			MUSIC = sdlmixer.Mix_LoadMUS(b"tetrisb.mid")
 		else:
-			music = sdlmixer.Mix_LoadMUS(b"tetrisc.mid")
-		sdlmixer.Mix_PlayMusic(music, -1)
+			MUSIC = sdlmixer.Mix_LoadMUS(b"tetrisc.mid")
+		sdlmixer.Mix_PlayMusic(MUSIC, -1)
 		runGame()
 		sdlmixer.Mix_HaltMusic()
 		showTextScreen("Game Over")
@@ -237,12 +237,16 @@ def runGame():
 					shutdown()
 				elif sc == SDL_SCANCODE_P:
 					#Pausing the game
-					ren.clear(BGCOLOR)
+					REN.clear(BGCOLOR)
 					sdlmixer.Mix_PauseMusic()
 					showTextScreen("Paused") # pause till keypress
 					sdlmixer.Mix_ResumeMusic()
-					lastMoveDownTime = SDL_GetTicks()
-					lastMoveSidewaysTime = SDL_GetTicks()
+					tmp = SDL_GetTicks()
+					#reseting these is necessary though lastFallTime might help them a bit
+					starttime = tmp
+					lastMoveDownTime = tmp
+					lastMoveSidewaysTime = tmp
+					lastFallTime = tmp
 
 				#rotate
 				elif sc == SDL_SCANCODE_UP or sc == SDL_SCANCODE_W:
@@ -289,14 +293,15 @@ def runGame():
 				lastFallTime = SDL_GetTicks() #replace all these calls with variable set at top of loop?
 
 		#draw everything
-		ren.clear(BGCOLOR)
-		#ren.fill((0,0,WINDOWWIDTH,WINDOWHEIGHT), BGCOLOR)
-		#ren.fill((XMARGIN - 3, 0, (BOARDWIDTH * BOXSIZE) + 8, WINDOWHEIGHT), BGCOLOR)
+		REN.clear(BGCOLOR)
+		#REN.fill((0,0,WINDOWWIDTH,WINDOWHEIGHT), BGCOLOR)
+		#REN.fill((XMARGIN - 3, 0, (BOARDWIDTH * BOXSIZE) + 8, WINDOWHEIGHT), BGCOLOR)
 
 		drawBoard(board)
 		if fallingPiece:
 			drawPiece(fallingPiece)
-		drawStatus(score, level, nextPiece) #ren.present called in here in sprite_renderer.render
+		drawStatus(score, level, nextPiece) #REN.present called in here in SPRITE_RENDERER.render
+		REN.present()
 
 		SDL_Delay(1000//FPS - ((SDL_GetTicks()-starttime)))
 			
@@ -323,21 +328,22 @@ def showTextScreen(text):
 	# center of the screen until a key is pressed.
 
 	# Draw the text drop shadow
-	shadowtext = sprite_factory.from_text(text, size=BIGFONTSIZE, color=TEXTSHADOWCOLOR)
+	shadowtext = SPRITE_FACTORY.from_text(text, size=BIGFONTSIZE, color=TEXTSHADOWCOLOR)
 	shadowtext.position = WINDOWWIDTH//2 - shadowtext.size[0]//2, WINDOWHEIGHT//2 - shadowtext.size[1]//2
 
 	# Draw the text
-	textsprite = sprite_factory.from_text(text, size=BIGFONTSIZE, color=TEXTCOLOR)
+	textsprite = SPRITE_FACTORY.from_text(text, size=BIGFONTSIZE, color=TEXTCOLOR)
 	textsprite.position = shadowtext.x-3, shadowtext.y-3
 
 	# Draw the additional "Press a key to play." text.
-	presskeysprite = sprite_factory.from_text("Press a key to play.", color=TEXTCOLOR)
+	presskeysprite = SPRITE_FACTORY.from_text("Press a key to play.", color=TEXTCOLOR)
 	presskeysprite.position = WINDOWWIDTH//2-presskeysprite.size[0]//2, shadowtext.y + 100
 
-	sprite_renderer.render([shadowtext, textsprite, presskeysprite])
+	SPRITE_RENDERER.render([shadowtext, textsprite, presskeysprite])
+	REN.present()
 	while checkForKeyPress() == None:
 		pass
-		#window.refresh()
+		#WINDOW.refresh()
 
 
 def checkForKeyPress():
@@ -447,16 +453,16 @@ def drawBox(boxx, boxy, color, pixelx=None, pixely=None):
 		return
 	if pixelx == None and pixely == None:
 		pixelx, pixely = convertToPixelCoords(boxx, boxy)
-	ren.fill((pixelx+1, pixely+1, BOXSIZE-1, BOXSIZE-1), COLORS[color])
-	ren.fill((pixelx+1, pixely+1, BOXSIZE-4, BOXSIZE-4), LIGHTCOLORS[color])
+	REN.fill((pixelx+1, pixely+1, BOXSIZE-1, BOXSIZE-1), COLORS[color])
+	REN.fill((pixelx+1, pixely+1, BOXSIZE-4, BOXSIZE-4), LIGHTCOLORS[color])
 
 
 def drawBoard(board):
 	# draw the border around the board (a box 10 pixels wider than playing area)
-	ren.fill((XMARGIN - 5, TOPMARGIN - 5, (BOARDWIDTH * BOXSIZE) + 10, (BOARDHEIGHT * BOXSIZE) + 10), BORDERCOLOR) 
+	REN.fill((XMARGIN - 5, TOPMARGIN - 5, (BOARDWIDTH * BOXSIZE) + 10, (BOARDHEIGHT * BOXSIZE) + 10), BORDERCOLOR) 
 
 	# fill the background of the board
-	ren.fill((XMARGIN, TOPMARGIN, BOXSIZE * BOARDWIDTH, BOXSIZE * BOARDHEIGHT), BGCOLOR) 
+	REN.fill((XMARGIN, TOPMARGIN, BOXSIZE * BOARDWIDTH, BOXSIZE * BOARDHEIGHT), BGCOLOR) 
 	# draw the individual boxes on the board
 	for x in range(BOARDWIDTH):
 		for y in range(BOARDHEIGHT):
@@ -465,17 +471,17 @@ def drawBoard(board):
 
 def drawStatus(score, level, piece):
 	# creote the text sprites
-	score_sprite = sprite_factory.from_text("Score: %s" % score, color=TEXTCOLOR)
+	score_sprite = SPRITE_FACTORY.from_text("Score: %s" % score, color=TEXTCOLOR)
 	score_sprite.position = WINDOWWIDTH - 150, 20
 
-	level_sprite = sprite_factory.from_text("Level: %s" % level, color=TEXTCOLOR)
+	level_sprite = SPRITE_FACTORY.from_text("Level: %s" % level, color=TEXTCOLOR)
 	level_sprite.position = WINDOWWIDTH-150, 50
 
-	next_text = sprite_factory.from_text("Next:", color=TEXTCOLOR)
+	next_text = SPRITE_FACTORY.from_text("Next:", color=TEXTCOLOR)
 	next_text.position = WINDOWWIDTH - 120, 80
 
 	drawPiece(piece, pixelx=WINDOWWIDTH-120, pixely=100)
-	sprite_renderer.render((score_sprite, level_sprite, next_text))
+	SPRITE_RENDERER.render((score_sprite, level_sprite, next_text))
 
 
 def drawPiece(piece, pixelx=None, pixely=None):

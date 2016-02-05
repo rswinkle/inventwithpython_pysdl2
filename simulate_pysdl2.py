@@ -37,7 +37,7 @@ BLUE         = sdl2.ext.Color(  0,   0, 155)
 BRIGHTYELLOW = sdl2.ext.Color(255, 255,   0)
 YELLOW       = sdl2.ext.Color(155, 155,   0)
 DARKGRAY     = sdl2.ext.Color( 40,  40,  40)
-bgColor = BLACK
+BGCOLOR = BLACK
 
 XMARGIN = int((WINDOWWIDTH - (2 * BUTTONSIZE) - BUTTONGAPSIZE) / 2)
 YMARGIN = int((WINDOWHEIGHT - (2 * BUTTONSIZE) - BUTTONGAPSIZE) / 2)
@@ -52,14 +52,14 @@ GREENRECT  = (XMARGIN + BUTTONSIZE + BUTTONGAPSIZE, YMARGIN + BUTTONSIZE + BUTTO
 
 def main():
 	#cause I don't want to pass these around
-	global ren, sprite_factory, sprite_renderer
-	global clickedButton, BEEP1, BEEP2, BEEP3, BEEP4
+	global REN, SPRITE_FACTORY, SPRITE_RENDERER
+	global CLICKEDBUTTON, BEEP1, BEEP2, BEEP3, BEEP4
 
 	sdl2.SDL_Init(sdl2.SDL_INIT_VIDEO|sdl2.SDL_INIT_AUDIO)
 
 	window = sdl2.ext.Window("Simulate", size=(WINDOWWIDTH, WINDOWHEIGHT))
-	ren = sdl2.ext.Renderer(window)
-	ren.blendmode = sdl2.SDL_BLENDMODE_BLEND
+	REN = sdl2.ext.Renderer(window)
+	REN.blendmode = sdl2.SDL_BLENDMODE_BLEND
 	
 	window.show()
 
@@ -67,8 +67,8 @@ def main():
 	font_manager = sdl2.ext.FontManager(font_file, size=16)
 
 	#fontmanager=font_manager will be default_args passed to every sprite creation method
-	sprite_factory = sdl2.ext.SpriteFactory(renderer=ren, fontmanager=font_manager, free=True)
-	sprite_renderer = sprite_factory.create_sprite_render_system(window)
+	SPRITE_FACTORY = sdl2.ext.SpriteFactory(renderer=REN, fontmanager=font_manager, free=True)
+	SPRITE_RENDERER = SPRITE_FACTORY.create_sprite_render_system(window)
 
 
 
@@ -90,15 +90,15 @@ def main():
 	waitingForInput = False
 
 	#directions text sprite
-	info_text = make_text(sprite_factory, "Match the pattern by clicking on the button or using the Q, W, A, S keys.", 10, WINDOWHEIGHT-25)
+	info_text = make_text(SPRITE_FACTORY, "Match the pattern by clicking on the button or using the Q, W, A, S keys.", 10, WINDOWHEIGHT-25)
 
-	clickedButton = []
+	CLICKEDBUTTON = []
 	while True:
-		ren.fill((0, 0, WINDOWWIDTH, WINDOWHEIGHT), bgColor)
+		REN.fill((0, 0, WINDOWWIDTH, WINDOWHEIGHT), BGCOLOR)
 		drawButtons()
 
-		score_text = make_text(sprite_factory, "Score: "+str(score), WINDOWWIDTH - 100, 10)
-		sprite_renderer.render([score_text, info_text]) #will bring the buttons to screen too when it calls renderpresent/update
+		score_text = make_text(SPRITE_FACTORY, "Score: "+str(score), WINDOWWIDTH - 100, 10)
+		SPRITE_RENDERER.render([score_text, info_text]) #will bring the buttons to screen too when it calls renderpresent/update
 
 		handle_events()
 
@@ -113,14 +113,14 @@ def main():
 			waitingForInput = True
 		else:
 			# wait for the player to enter buttons
-			if clickedButton and clickedButton[0] == pattern[currentStep]:
+			if CLICKEDBUTTON and CLICKEDBUTTON[0] == pattern[currentStep]:
 				# pushed the correct button
-				flashButtonAnimation(clickedButton[0])
+				flashButtonAnimation(CLICKEDBUTTON[0])
 				currentStep += 1
 				lastClickTime = sdl2.SDL_GetTicks()
 				
 				#could replace with collections.deque but premature optimizations and all that
-				clickedButton.pop(0)
+				CLICKEDBUTTON.pop(0)
 
 				if currentStep == len(pattern):
 					# pushed the last button in the pattern
@@ -128,23 +128,24 @@ def main():
 					score += 1
 					waitingForInput = False
 					currentStep = 0 # reset back to first step
-					#clickedButton.clear() clear added in 3.3! ... I'm surprised it hasn't been there forever since it's way better than del l[:] or l[:] = []
+					#CLICKEDBUTTON.clear() clear added in 3.3! ... I'm surprised it hasn't been there forever since it's way better than del l[:] or l[:] = []
 					#and it parallels other collection clear functions
-					del clickedButton[:]
+					del CLICKEDBUTTON[:]
 
 
-			elif (clickedButton and clickedButton[0] != pattern[currentStep]) or (currentStep != 0 and sdl2.SDL_GetTicks() - TIMEOUT*1000 > lastClickTime):
+			elif (CLICKEDBUTTON and CLICKEDBUTTON[0] != pattern[currentStep]) or (currentStep != 0 and sdl2.SDL_GetTicks() - TIMEOUT*1000 > lastClickTime):
 				# pushed the incorrect button, or has timed out
 				gameOverAnimation()
 				# reset the variables for a new game:
 				pattern = []
-				#clickedButton.clear()
-				del clickedButton[:]
+				#CLICKEDBUTTON.clear()
+				del CLICKEDBUTTON[:]
 				currentStep = 0
 				waitingForInput = False
 				score = 0
 				sdl2.SDL_Delay(1000)
 				changeBackgroundAnimation()
+
 
 		sdl2.SDL_Delay(1000//FPS)
 
@@ -155,7 +156,7 @@ def main():
 #will ignore clicks while busy doing animation etc.
 #ie you can't click faster than it can flash them
 def handle_events():
-	global clickedButton
+	global CLICKEDBUTTON
 	for event in sdl2.ext.get_events():
 		if event.type == sdl2.SDL_QUIT:
 			shutdown()
@@ -163,23 +164,23 @@ def handle_events():
 			mousex, mousey = event.button.x, event.button.y
 			button = getButtonClicked(mousex, mousey)
 			if button:
-			    clickedButton.append(button)
+			    CLICKEDBUTTON.append(button)
 		elif event.type == sdl2.SDL_KEYDOWN:
 			sym = event.key.keysym.sym
 			if sym == sdl2.SDLK_ESCAPE:
 				shutdown()
 			elif sym == sdl2.SDLK_q:
-				clickedButton.append(YELLOW)
+				CLICKEDBUTTON.append(YELLOW)
 			elif sym == sdl2.SDLK_w:
-				clickedButton.append(BLUE)
+				CLICKEDBUTTON.append(BLUE)
 			elif sym == sdl2.SDLK_a:
-				clickedButton.append(RED)
+				CLICKEDBUTTON.append(RED)
 			elif sym == sdl2.SDLK_s:
-				clickedButton.append(GREEN)
+				CLICKEDBUTTON.append(GREEN)
 	
 
-def make_text(sprite_factory, text, top, left):
-	button = sprite_factory.from_text(text)
+def make_text(SPRITE_FACTORY, text, top, left):
+	button = SPRITE_FACTORY.from_text(text)
 	button.position = top, left
 	return button
 
@@ -193,10 +194,10 @@ def shutdown():
 
 
 def drawButtons():
-	ren.fill(YELLOWRECT, YELLOW)
-	ren.fill(BLUERECT, BLUE)
-	ren.fill(REDRECT, RED)
-	ren.fill(GREENRECT, GREEN)
+	REN.fill(YELLOWRECT, YELLOW)
+	REN.fill(BLUERECT, BLUE)
+	REN.fill(REDRECT, RED)
+	REN.fill(GREENRECT, GREEN)
 
 
 def flashButtonAnimation(color, animationSpeed=50):
@@ -223,13 +224,13 @@ def flashButtonAnimation(color, animationSpeed=50):
 	for start, end, step in ((0, 255, 1), (255, 0, -1)): # animation loop
 		for alpha in range(start, end, animationSpeed * step):
 			handle_events()
-			ren.fill(rectangle, color)
-			ren.fill(rectangle, (r,g,b,alpha))
-			ren.present()
+			REN.fill(rectangle, color)
+			REN.fill(rectangle, (r,g,b,alpha))
+			REN.present()
 			sdl2.SDL_Delay(1000//FPS)
 
-	ren.fill(rectangle, color)
-	ren.present()
+	REN.fill(rectangle, color)
+	REN.present()
 
 
 def getButtonClicked(x, y):
@@ -246,20 +247,20 @@ def getButtonClicked(x, y):
 
 
 def changeBackgroundAnimation(animationSpeed=40):
-	global bgColor
+	global BGCOLOR
 	newBgColor = sdl2.ext.Color(random.randint(0, 255), random.randint(0, 255), random.randint(0, 255))
 
 	r, g, b, a = newBgColor
 	for alpha in range(0, 255, animationSpeed): # animation loop
 		handle_events()
-		ren.fill((0, 0, WINDOWWIDTH, WINDOWHEIGHT), (r,g,b,alpha))
+		REN.fill((0, 0, WINDOWWIDTH, WINDOWHEIGHT), (r,g,b,alpha))
 		
 		drawButtons() # redraw the buttons on top of the tint
 
-		ren.present();
+		REN.present();
 		sdl2.SDL_Delay(1000//FPS)
 
-	bgColor = newBgColor
+	BGCOLOR = newBgColor
 
 
 def gameOverAnimation(color=WHITE, animationSpeed=50):
@@ -277,13 +278,13 @@ def gameOverAnimation(color=WHITE, animationSpeed=50):
 			# The first iteration in this loop sets the following for loop
 			# to go from 0 to 255, the second from 255 to 0.
 			for alpha in range(start, end, animationSpeed * step): # animation loop
-				# alpha means transparency. 255 is opaque, 0 is invisible
+				# alpha means transpaRENcy. 255 is opaque, 0 is invisible
 				handle_events()
 
-				ren.fill((0, 0, WINDOWWIDTH, WINDOWHEIGHT), (r,g,b,alpha))
+				REN.fill((0, 0, WINDOWWIDTH, WINDOWHEIGHT), (r,g,b,alpha))
 				drawButtons()
 
-				ren.present()
+				REN.present()
 				sdl2.SDL_Delay(1000//FPS)
 
 

@@ -53,39 +53,35 @@ RIGHT = 'right'
 
 def main():
 	#cause I don't want to pass these around
-	global ren, sprite_factory, sprite_renderer
-	global reset_button, new_button, solve_button
+	global REN, SPRITE_FACTORY, SPRITE_RENDERER
+	global RESET_BUTTON, NEW_BUTTON, SOLVE_BUTTON
 
 
 	sdl2.ext.init()
 
 	window = sdl2.ext.Window("Slide Puzzle", size=(WINDOWWIDTH, WINDOWHEIGHT))
-	ren = sdl2.ext.Renderer(window)
+	REN = sdl2.ext.Renderer(window)
 	window.show()
 
 	font_file = sysfont.get_font("freesans", sysfont.STYLE_BOLD)
 	font_manager = sdl2.ext.FontManager(font_file, size=BASICFONTSIZE)
 
 	#fontmanager=font_manager will be default_args passed to every sprite creation method
-	sprite_factory = sdl2.ext.SpriteFactory(renderer=ren, fontmanager=font_manager, free=True)
-	sprite_renderer = sprite_factory.create_sprite_render_system(window)
+	SPRITE_FACTORY = sdl2.ext.SpriteFactory(renderer=REN, fontmanager=font_manager, free=True)
+	SPRITE_RENDERER = SPRITE_FACTORY.create_sprite_render_system(window)
 
 
-	reset_button, reset_rect = make_text(sprite_factory, "Reset", WINDOWWIDTH - 120, WINDOWHEIGHT - 90, bg_color=TILECOLOR)
-	new_button, new_rect = make_text(sprite_factory, "New Game", WINDOWWIDTH - 120, WINDOWHEIGHT - 60, bg_color=TILECOLOR)
-	solve_button, solve_rect = make_text(sprite_factory, "Solve", WINDOWWIDTH - 120, WINDOWHEIGHT - 30, bg_color=TILECOLOR)
+	RESET_BUTTON, reset_rect = make_text(SPRITE_FACTORY, "Reset", WINDOWWIDTH - 120, WINDOWHEIGHT - 90, bg_color=TILECOLOR)
+	NEW_BUTTON, new_rect = make_text(SPRITE_FACTORY, "New Game", WINDOWWIDTH - 120, WINDOWHEIGHT - 60, bg_color=TILECOLOR)
+	SOLVE_BUTTON, solve_rect = make_text(SPRITE_FACTORY, "Solve", WINDOWWIDTH - 120, WINDOWHEIGHT - 30, bg_color=TILECOLOR)
 
 
 	mainBoard, solutionSeq = generateNewPuzzle(NUMSLIDES)
 	SOLVEDBOARD = getStartingBoard() # a solved board is the same as the board in a start state.
 	allMoves = [] # list of moves made from the solved configuration
 
-	hello_sprite = sprite_factory.from_text("Hello World!")
-	goodbye_sprite = sprite_factory.from_text("Goodbye!")
-	goodbye_sprite.position = 200, 0
 
-
-	print(new_button.area)
+	print(NEW_BUTTON.area)
 	
 	running = True
 	while running:
@@ -94,7 +90,7 @@ def main():
 		if mainBoard == SOLVEDBOARD:
 			msg = 'Solved!'
 
-		#drawBoard(mainBoard, msg)
+		drawBoard(mainBoard, msg)
 
 		for event in sdl2.ext.get_events():
 			if event.type == sdl2.SDL_QUIT:
@@ -151,7 +147,7 @@ def main():
 			slideAnimation(mainBoard, slideTo, 'Click tile or press arrow keys to slide.', 8) # show slide on screen
 			allMoves.append(slideTo) # record the slide
 
-
+		REN.present()
 		sdl2.SDL_Delay(1000//FPS)
 
 	
@@ -160,8 +156,8 @@ def main():
 
 
 
-def make_text(sprite_factory, text, top, left, **kwargs):
-	button = sprite_factory.from_text(text, **kwargs)
+def make_text(SPRITE_FACTORY, text, top, left, **kwargs):
+	button = SPRITE_FACTORY.from_text(text, **kwargs)
 	button.position = top, left
 	return (button, sdl2.SDL_Rect(top, left, *button.size))
 
@@ -183,10 +179,10 @@ def generateNewPuzzle(numSlides):
 
 
 def drawBoard(board, message):
-	ren.clear(BGCOLOR)
+	REN.clear(BGCOLOR)
 	if message:
-		text, rect = make_text(sprite_factory, message, 5, 5)
-		sprite_renderer.render(text)
+		text, rect = make_text(SPRITE_FACTORY, message, 5, 5)
+		SPRITE_RENDERER.render(text)
 
 	for tilex in range(len(board)):
 		for tiley in range(len(board[0])):
@@ -201,13 +197,13 @@ def drawBoard(board, message):
 	#another (maybe) is draw 4 sdlgfx.thickLineRGBA's
 	#though that seems more iffy because would you specify left-3 or 4 since
 	#the center of the line is between them with an even width ...
-	ren.draw_rect((left-5, top-5, width+11, height+11), BORDERCOLOR)
-	ren.draw_rect((left-4, top-4, width+10, height+10), BORDERCOLOR)
-	ren.draw_rect((left-3, top-3, width+9, height+9), BORDERCOLOR)
-	ren.draw_rect((left-2, top-2, width+8, height+8), BORDERCOLOR)
+	REN.draw_rect((left-5, top-5, width+11, height+11), BORDERCOLOR)
+	REN.draw_rect((left-4, top-4, width+10, height+10), BORDERCOLOR)
+	REN.draw_rect((left-3, top-3, width+9, height+9), BORDERCOLOR)
+	REN.draw_rect((left-2, top-2, width+8, height+8), BORDERCOLOR)
 
 	
-	sprite_renderer.render([reset_button, new_button, solve_button])
+	SPRITE_RENDERER.render([RESET_BUTTON, NEW_BUTTON, SOLVE_BUTTON])
 
 
 def getStartingBoard():
@@ -298,15 +294,15 @@ def drawTile(tilex, tiley, number, adjx=0, adjy=0):
 	# pixels over (determined by adjx and adjy)
 	left, top = getLeftTopOfTile(tilex, tiley)
 
-	ren.fill((left+adjx, top+adjy, TILESIZE, TILESIZE), TILECOLOR)
-	num_text = sprite_factory.from_text(str(number))
+	REN.fill((left+adjx, top+adjy, TILESIZE, TILESIZE), TILECOLOR)
+	num_text = SPRITE_FACTORY.from_text(str(number))
 	num_text.position = left + TILESIZE//2 + adjx, top + TILESIZE//2 + adjy
 	num_text.x -= num_text.size[0]//2
 	num_text.y -= num_text.size[1]//2
 
 	#textSurf = BASICFONT.render(str(number), True, TEXTCOLOR)
 
-	sprite_renderer.render(num_text)
+	SPRITE_RENDERER.render(num_text)
 
 
 
@@ -329,13 +325,15 @@ def slideAnimation(board, direction, message, animationSpeed):
 		movex = blankx - 1
 		movey = blanky
 
+	print("mx, my", movex, movey)
+
 	left, top = getLeftTopOfTile(movex, movey)
 	adjx, adjy = 0, 0
 
 	for i in range(0, TILESIZE, animationSpeed):
 		# animate the tile sliding over
 		#checkForQuit()
-		ren.fill((left+adjx, top+adjy, TILESIZE, TILESIZE), BGCOLOR)
+		REN.fill((left+adjx, top+adjy, TILESIZE, TILESIZE), BGCOLOR)
 		if direction == UP:
 			adjx, adjy = 0, -i
 		if direction == DOWN:
@@ -346,10 +344,10 @@ def slideAnimation(board, direction, message, animationSpeed):
 			adjx, adjy = i, 0
 		
 		drawTile(movex, movey, board[movex][movey], adjx, adjy)
-
+		REN.present()
 		sdl2.SDL_Delay(1000//FPS)
 	
-	ren.fill((left+adjx, top+adjy, TILESIZE, TILESIZE), BGCOLOR)
+	REN.fill((left+adjx, top+adjy, TILESIZE, TILESIZE), BGCOLOR)
 	makeMove(board, direction)
 	drawTile(blankx, blanky, board[blankx][blanky])
 
