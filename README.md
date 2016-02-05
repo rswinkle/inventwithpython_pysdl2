@@ -27,8 +27,14 @@ for more details on the differences between Pygame and PySDL2
 I've ported the first 8 projects, though the first 3 hardly count being so simple.
 They all (should) work with python 2.7 and python 3.x though I think I may drop
 python 2 in the future.  They're mostly straight ports not redesigns/reimplementations,
-so it's easy to compare/learn (I've left all the pygame versions in the repo).  I have
+so it's easy to compare/learn (I've left all the pygame versions in the repo).  In other
+words, I keep as much of his functions/code structure as possible.  I have
 about 7 more games to go and various improvements in the first half and general maintenance.
+
+One other thing to note.  In the latest commit I added a local copy of PySDL2 with
+2 changes.  I've submitted a [pull request](https://bitbucket.org/marcusva/py-sdl2/pull-requests/39/fix-bug-in-rendererdraw_line/diff)
+but even if/when those changes are merged I'll keep a local copy in the repo for
+convenience.
 
 ## License
 All original content/code is copyrighted by Al Sweigart and as you can see
