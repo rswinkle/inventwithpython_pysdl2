@@ -24,7 +24,8 @@ for more details on the differences between Pygame and PySDL2
 
 
 ## Status
-I've ported the first 8 projects, though the first 3 hardly count being so simple.
+I've ported 10 of the projects, though the 4 of hardly count being so simple, or
+in the case of tetromino for idiots, only a few lines different from tetromino.
 They all (should) work with python 2.7 and python 3.x though I think I may drop
 python 2 in the future.  They're mostly straight ports not redesigns/reimplementations,
 so it's easy to compare/learn (I've left all the pygame versions in the repo).  In other
