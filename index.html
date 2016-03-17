@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+
+	<head>
+	
+<title>Invent With Python ported to PySDL2 | Robert Winkler</title>
+
+
+	<link rel="stylesheet" type="text/css" href="/css/global.css">
+	<meta charset="utf-8" />
+	<script type="text/javascript" src="/scripts/changetheme.js"></script>
+
+	</head>
+
+
+<body>
+
+
+	<div class="navbar">
+		<div class="container flex">
+			<div>
+			<h1>Robert Winkler</h1>
+			<a id="theme" href="#dark" onclick="change('/css/global.css', '/css/dark.css');">Dark Theme</a>
+			</div>
+			<table>
+				<tr>
+					<td><a href="/">Home</a></td>
+					<td><a href="/blog/">Blog</a></td>
+					<td><a href="/projects/">Projects</a></td>
+				</tr>
+			</table>
+		</div>
+	</div>
+
+
+<div class="container">
+
+
+
+<h1>Invent With Python ported to PySDL2</h1>
+
+<p>This is a project aiming to port all the code/games from the book
+<a href="http://inventwithpython.com/pygame/chapters/">"Making Games with Python &amp; Pygame"</a> by Al Sweigart
+from pygame to PySDL2.</p>
+<h2>Download</h2>
+<p>Get the source at <a href="https://github.com/rswinkle/inventwithpython_pysdl2">Github</a></p>
+<h2>Why?</h2>
+<p>Well, I'm mostly a C/C++ programmer and I use SDL2 for my games/demos and
+I wanted to be able to prototype in python with a library that'd make
+it very easy to go from that to C.  PySDL2 does have some
+great convenience classes/API's in the sdl2.ext module, but it's not hard to look
+into the source and see what they're actually doing.  In addition it has
+the sdl2 module, which is a straight 1:1 wrapper of SDL2, as well as
+1:1 wrappers of SDL2 libraries like SDL2_mixer, SDL2_gfx and SDL2_ttf.
+This design also makes using PySDL2 a great way to learn the SDL2
+API and related libraries in general.</p>
+<p>Look <a href="https://pysdl2.readthedocs.org/en/latest/tutorial/pygamers.html">here</a>
+for more details on the differences between Pygame and PySDL2</p>
+<p>In any case, I started this project as a way of learning PySDL2 and I think will
+be useful for people trying to learn PySDL2 whether or not they have
+experience with Pygame and it'll be a convenient way for people to get a feel
+for both API's if they're trying to pick one.</p>
+<h2>Status</h2>
+<p>I've ported the first 8 programs, though the first 3 aren't actually games.
+I have 9 more but 2 are just variations of 2 that I've already done.</p>
+<p>They all (should) work with python 2.7 and python 3.x though I think I may drop
+python 2 in the future.  They're mostly straight ports not redesigns/reimplementations,
+so it's easy to compare/learn (I've left all the pygame versions in the repo).  I have
+about 7 more games to go and various improvements in the first half and general maintenance.</p>
+<h2>License</h2>
+<p>All original content/code is copyrighted by Al Sweigart and as you can see
+at the top of his py files, is BSD licensed.  All my code is public domain,
+fallback to MIT/BSD.  I may change/expand/formalize the fallback later but
+take it, do whatever you want with it, is the gist if public domain doesn't
+work obviously.</p>
+<h3>References/Sources</h3>
+<p><a href="http://inventwithpython.com/pygame/chapters/">http://inventwithpython.com/pygame/chapters/</a></p>
+<p><a href="https://bitbucket.org/marcusva/py-sdl2/overview">https://bitbucket.org/marcusva/py-sdl2/overview</a></p>
+<p><a href="https://pysdl2.readthedocs.org/en/latest/#">https://pysdl2.readthedocs.org/en/latest/#</a></p>
+
+
+</div>
+
+
+	<div class="footer">
+		<div class="container flex">
+			<a href="https://github.com/rswinkle">
+				<img alt="github" src="/images/icons/github.svg">
+			</a>
+			<a href="https://www.linkedin.com/in/rswinkle">
+				<img alt="linkedin" src="/images/icons/linkedin.svg">
+			</a>
+			<a href="https://www.google.com/+RobertWinkler25">
+				<img alt="google+" src="/images/icons/google+.svg">
+			</a>
+			<a href="https://www.goodreads.com/user/show/909505-robert">
+				<img alt="goodreads" src="/images/icons/goodreads.svg">
+			</a>
+			<a href="https://twitter.com/robertwinkler9">
+				<img alt="twitter" src="/images/icons/twitter.svg">
+			</a>
+			<a href="https://stackoverflow.com/users/2624136/rswinkle">
+				<img alt="stackoverflow" src="/images/icons/stackoverflow.svg">
+			</a>
+			<a href="http://www.youtube.com/c/RobertWinkler25">
+				<img alt="youtube" src="/images/icons/youtube.svg">
+			</a>
+			<a href="https://www.reddit.com/user/robert_winkler/">
+				<img alt="reddit" src="/images/icons/reddit.svg">
+			</a>
+		</div>
+	</div>
+	<p class="container" style="font-size:0.75em;color:#b3b3b3;text-align:center;">
+		© Robert Winkler, 2010 - 2016. Site design based closely on
+		<a href="http://www.michaelfogleman.com/">Michael Fogelman's awesome site</a>.
+	</p>
+
+
+</body>
+
+</html>
