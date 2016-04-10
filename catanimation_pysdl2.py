@@ -54,6 +54,7 @@ while running:
 	sprite.position = catx, caty
 	renderer.clear(WHITE)
 	spriterenderer.render(sprite)
+	renderer.present()
 	sdl2.SDL_Delay(10)
 
 

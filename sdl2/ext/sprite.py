@@ -160,6 +160,8 @@ class Renderer(object):
         pcount = len(points)
         if (pcount % 2) != 0:
             raise ValueError("points does not contain a valid set of points")
+        if pcount < 4:
+            raise ValueError("points must contain more that one point")
         if pcount == 4:
             if color is not None:
                 tmp = self.color
