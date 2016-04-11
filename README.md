@@ -32,10 +32,12 @@ so it's easy to compare/learn (I've left all the pygame versions in the repo).  
 words, I keep as much of his functions/code structure as possible.  I have
 about 7 more games to go and various improvements in the first half and general maintenance.
 
-One other thing to note.  In the latest commit I added a local copy of PySDL2 with
-2 changes.  I've submitted a [pull request](https://bitbucket.org/marcusva/py-sdl2/pull-requests/39/fix-bug-in-rendererdraw_line/diff)
-but even if/when those changes are merged I'll keep a local copy in the repo for
-convenience.
+One other thing to note.  I am using a local copy of PySDL2 with 1 change, modifying
+SpriteRenderer.render() behavior.  I've changed it so that it does *not* call
+SDL_RenderPresent/SDL_UpdateWindowSurface. I've created an [issue](https://bitbucket.org/marcusva/py-sdl2/issues/91/spriterenderer-render-behavior-change) to
+discuss the design/behavior of that function and why it should change,
+but even if the change is merged I'll keep a local copy in the repo for
+convenience and because I'll change/add other minor things.
 
 ## License
 All original content/code is copyrighted by Al Sweigart and as you can see
