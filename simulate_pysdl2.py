@@ -98,7 +98,7 @@ def main():
 		drawButtons()
 
 		score_text = make_text(SPRITE_FACTORY, "Score: "+str(score), WINDOWWIDTH - 100, 10)
-		SPRITE_RENDERER.render([score_text, info_text]) #will bring the buttons to screen too when it calls renderpresent/update
+		SPRITE_RENDERER.render([score_text, info_text])
 
 		handle_events()
 

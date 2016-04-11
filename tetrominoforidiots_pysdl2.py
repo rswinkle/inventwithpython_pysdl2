@@ -198,7 +198,7 @@ def runGame():
 		drawBoard(board)
 		if fallingPiece:
 			drawPiece(fallingPiece)
-		drawStatus(score, level, nextPiece) #REN.present called in here in SPRITE_RENDERER.render
+		drawStatus(score, level, nextPiece)
 		REN.present()
 
 		SDL_Delay(1000//FPS - ((SDL_GetTicks()-starttime)))
