@@ -1,4 +1,3 @@
-import sys
 from ctypes import Structure, c_int, c_char_p, c_double, c_void_p, CFUNCTYPE, \
     POINTER
 from .dll import _bind, nullfunc
@@ -30,7 +29,7 @@ __all__ = ["SDL_AudioFormat", "SDL_AUDIO_MASK_BITSIZE",
            "SDL_MixAudioFormat", "SDL_LockAudio", "SDL_LockAudioDevice",
            "SDL_UnlockAudio", "SDL_UnlockAudioDevice", "SDL_CloseAudio",
            "SDL_CloseAudioDevice", "SDL_QueueAudio", "SDL_GetQueuedAudioSize",
-           "SDL_ClearQueuedAudio"
+           "SDL_ClearQueuedAudio", "SDL_DequeueAudio"
          ]
 
 SDL_AudioFormat = Uint16
@@ -162,6 +161,7 @@ SDL_UnlockAudioDevice = _bind("SDL_UnlockAudioDevice", [SDL_AudioDeviceID])
 SDL_CloseAudio = _bind("SDL_CloseAudio")
 SDL_CloseAudioDevice = _bind("SDL_CloseAudioDevice", [SDL_AudioDeviceID])
 SDL_QueueAudio = _bind("SDL_QueueAudio", [SDL_AudioDeviceID, c_void_p, Uint32], c_int, nullfunc)
+SDL_DequeueAudio = _bind("SDL_DequeueAudio", [SDL_AudioDeviceID, c_void_p, Uint32], Uint32, nullfunc)
 SDL_GetQueuedAudioSize = _bind("SDL_GetQueuedAudioSize", [SDL_AudioDeviceID], Uint32, nullfunc)
 SDL_ClearQueuedAudio = _bind("SDL_ClearQueuedAudio", [SDL_AudioDeviceID], optfunc=nullfunc)
 

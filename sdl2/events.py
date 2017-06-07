@@ -21,10 +21,12 @@ __all__ = ["SDL_FIRSTEVENT", "SDL_QUIT", "SDL_APP_TERMINATING",
            "SDL_CONTROLLERDEVICEREMOVED", "SDL_CONTROLLERDEVICEREMAPPED",
            "SDL_FINGERDOWN", "SDL_FINGERUP", "SDL_FINGERMOTION",
            "SDL_DOLLARGESTURE", "SDL_DOLLARRECORD", "SDL_MULTIGESTURE",
-           "SDL_CLIPBOARDUPDATE", "SDL_DROPFILE", "SDL_RENDER_TARGETS_RESET",
-           "SDL_RENDER_DEVICE_RESET", "SDL_USEREVENT", "SDL_LASTEVENT",
-           "SDL_AUDIODEVICEADDED", "SDL_AUDIODEVICEREMOVED",
-           "SDL_EventType","SDL_GenericEvent", "SDL_WindowEvent",
+           "SDL_CLIPBOARDUPDATE", "SDL_DROPFILE", "SDL_DROPTEXT",
+           "SDL_DROPBEGIN", "SDL_DROPCOMPLETE",
+           "SDL_RENDER_TARGETS_RESET", "SDL_RENDER_DEVICE_RESET",
+           "SDL_USEREVENT", "SDL_LASTEVENT", "SDL_AUDIODEVICEADDED",
+           "SDL_AUDIODEVICEREMOVED",
+           "SDL_EventType","SDL_CommonEvent", "SDL_WindowEvent",
            "SDL_KeyboardEvent", "SDL_TEXTEDITINGEVENT_TEXT_SIZE",
            "SDL_TextEditingEvent", "SDL_TEXTINPUTEVENT_TEXT_SIZE",
            "SDL_TextInputEvent", "SDL_MouseMotionEvent", "SDL_MouseButtonEvent",
@@ -86,6 +88,9 @@ SDL_DOLLARRECORD = 0x801
 SDL_MULTIGESTURE = 0x802
 SDL_CLIPBOARDUPDATE = 0x900
 SDL_DROPFILE = 0x1000
+SDL_DROPTEXT = 0x1001
+SDL_DROPBEGIN = 0x1002
+SDL_DROPCOMPLETE = 0x1003
 SDL_AUDIODEVICEADDED = 0x1100
 SDL_AUDIODEVICEREMOVED = 0x1101
 SDL_RENDER_TARGETS_RESET = 0x2000
@@ -97,7 +102,8 @@ SDL_EventType = c_int
 SDL_RELEASED = 0
 SDL_PRESSED = 1
 
-class SDL_GenericEvent(Structure):
+
+class SDL_CommonEvent(Structure):
     _fields_ = [("type", Uint32), ("timestamp", Uint32)]
 
 class SDL_WindowEvent(Structure):
@@ -303,7 +309,8 @@ class SDL_DollarGestureEvent(Structure):
 class SDL_DropEvent(Structure):
     _fields_ = [("type", Uint32),
                 ("timestamp", Uint32),
-                ("file", c_char_p)
+                ("file", c_char_p),
+                ("windowID", Uint32)
                 ]
 
 class SDL_QuitEvent(Structure):
@@ -337,7 +344,7 @@ class SDL_SysWMEvent(Structure):
 
 class SDL_Event(Union):
     _fields_ = [("type", Uint32),
-                ("generic", SDL_GenericEvent),
+                ("common", SDL_CommonEvent),
                 ("window", SDL_WindowEvent),
                 ("key", SDL_KeyboardEvent),
                 ("edit", SDL_TextEditingEvent),
